@@ -4,3 +4,4 @@ kastore
 numpy
 slim
 pandas
+jupyter

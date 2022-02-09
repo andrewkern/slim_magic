@@ -10,36 +10,37 @@ with codecs_open('README.md', encoding='utf-8') as f:
 
 # After exec'ing this file we have tskit_version defined.
 tskit_version = None  # Keep PEP8 happy.
-version_file = os.path.join("pyslim", "_version.py")
+version_file = os.path.join("slim_magic", "_version.py")
 with open(version_file) as f:
     exec(f.read())
 
-setup(name='pyslim',
-      version=pyslim_version,
-      description=u"Manipulate tree sequences produced by SLiM.",
+setup(name='slim_magic',
+      version=slim_magic_version,
+      description=u"ipython magic for SLiM.",
       long_description=long_description,
       long_description_content_type="text/markdown",
       classifiers=[],
-      keywords=['tree sequences', 'tskit'],
-      author=u"Peter Ralph",
-      author_email='petrel.harp@gmail.com',
-      url='https://github.com/tskit-dev/pyslim',
+      keywords=['tree sequences', 'tskit', 'slim', 'ipython', 'magic'],
+      author=u"Andrew Kern",
+      author_email='adkern@uoregon.edu',
+      url='https://github.com/andrewkern/slim_magic',
       license='MIT',
-      packages=['pyslim'],
+      packages=['slim_magic'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
           'msprime>=1.0.1',
           'tskit',
           'kastore',
-          'numpy'],
+          'numpy',
+          'jupyter'],
       extras_require={
           'dev': [],
       },
 
       setup_requires=[],
       project_urls={
-          'Bug Reports': 'https://github.com/tskit-dev/pyslim/issues',
-          'Source': 'https://github.com/tskit-dev/pyslim',
+          'Bug Reports': 'https://github.com/andrewkern/slim_magic/issues',
+          'Source': 'https://github.com/andrewkern/slim_magic/pyslim',
       },
       )
