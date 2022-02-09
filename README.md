@@ -10,6 +10,12 @@ intuition for what a simulation
 might produce, without
 using the excellent SLiM GUI. 
 
+The basic idea is that the magic functions will 
+execute a cell with a SLiM code block behind the 
+scenes and return to the user either a dataframe
+full of summaries output by the code or 
+a tree sequence. 
+
 ## Installation
 To install `slim_magic` take the following steps, starting with
 cloning this repo
