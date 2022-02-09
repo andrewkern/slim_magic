@@ -44,7 +44,7 @@ class SlimMagic(Magics):
     @magic_arguments.magic_arguments()
     @slim_magic_args
     @cell_magic
-    def slim_stats(self, name=None, cell=None):
+    def slim_stats(self, line=None, cell=None):
         """
         slim_stats returns a pandas df in which
         a SLiM simulation has been run, its output captured.
