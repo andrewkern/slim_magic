@@ -14,4 +14,6 @@ using the excellent SLiM GUI.
 Currently there are three separate magic functions implemented, please
 see `example_magic.ipynb` for a jupyter notebook example.
 
+The three functions are `%%slim_stats`, `%%slim_stats_reps_cstack`, and
+`%%slim_stats_reps_rstack`
 
