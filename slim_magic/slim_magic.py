@@ -24,7 +24,7 @@ class SlimMagic(Magics):
         generation, stat1, stat2, ... , statn
 
         usage:
-        %%slim_stats
+        %%slim_stats 
         """
         script = cell
         logfile = "tmp.log"
@@ -57,10 +57,10 @@ class SlimMagic(Magics):
         generation,stat1_rep1,stat2_rep1,...,statn_rep1,...,stat1_repn,...
        
         usage:
-        %%slim_stats_reps_cstack num_reps cell_script
+        %%slim_stats_reps_cstack num_reps cell
         """
         script = cell
-        n = int(reps)
+        n = int(num_reps)
         aList = []
         for i in range(n):
             logfile = "tmp.log"
@@ -101,7 +101,7 @@ class SlimMagic(Magics):
         %%slim_stats_reps_rstack num_reps cell_script
         """
         script = cell
-        n = int(reps)
+        n = int(num_reps)
         aList = []
         for i in range(n):
             logfile = "tmp.log"
@@ -128,13 +128,13 @@ class SlimMagic(Magics):
         from the SLiM simulation.
         Contents of the cell specify the complete SLiM
         simulation.
-        
+
         usage:
-        %%slim_ts
+        %%slim_ts cell_script
         """
         script = cell
         logfile = "tmp.log"
         os.system("echo '" + script + "' | slim > " + logfile)
         ts = tskit.load("tmp.trees")
-        # TODO: delete tmp.log and tmp.trees
+        # TODO: delete tmp.trees and tmp.log
         return ts
