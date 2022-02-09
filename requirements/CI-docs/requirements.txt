@@ -1,0 +1,12 @@
+setuptools-scm==4.1.2
+sphinx==3.3.1
+sphinx-argparse==0.2.5
+sphinx-issues==1.2.0
+jupyter-book==0.10.0
+kastore==0.3.1
+tskit==0.4.0
+msprime==1.1.0
+kastore==0.3.1
+PyGithub==1.53
+matplotlib==3.3.0
+pandas
