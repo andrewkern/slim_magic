@@ -3,13 +3,14 @@ from io import StringIO
 import os
 import subprocess
 import pandas as pd
+import tskit
 
 
 @magics_class
 class SlimMagic(Magics):
 
     @cell_magic
-    def slim_stats(self, name, cell):
+    def slim_stats(self, name=None, cell=None):
         """
         slim_stats returns a pandas df in which
         a SLiM simulation has been run, its output captured.
@@ -21,6 +22,9 @@ class SlimMagic(Magics):
         the header row begins with 'generation' e.g.,
         
         generation, stat1, stat2, ... , statn
+
+        usage:
+        %%slim_stats
         """
         script = cell
         logfile = "tmp.log"
@@ -39,10 +43,10 @@ class SlimMagic(Magics):
         return df
 
     @cell_magic
-    def slim_stats_reps_cstack(self, reps, cell):
+    def slim_stats_reps_cstack(self, num_reps, cell):
         """
         slim_stats_reps_cstack returns a pandas df in which
-        reps number of replicate SLiM simulations have been
+        num_reps number of replicate SLiM simulations have been
         run, and their output captured, and then column stacked,
         merging along rows.
         
@@ -51,6 +55,9 @@ class SlimMagic(Magics):
         the header row begins with 'generation' e.g.,
         
         generation,stat1_rep1,stat2_rep1,...,statn_rep1,...,stat1_repn,...
+       
+        usage:
+        %%slim_stats_reps_cstack num_reps cell_script
         """
         script = cell
         n = int(reps)
@@ -77,10 +84,10 @@ class SlimMagic(Magics):
         return dff
         
     @cell_magic
-    def slim_stats_reps_rstack(self, reps, cell):
+    def slim_stats_reps_rstack(self, num_reps, cell):
         """
         slim_stats_reps_rstack returns a pandas df in which
-        reps number of replicate slim simulations have been
+        num_reps number of replicate slim simulations have been
         run, and their output captured, and then row stacked, merging
         along columns. 
         
@@ -89,6 +96,9 @@ class SlimMagic(Magics):
         the header row begins with 'generation' e.g.,
         
         generation,stat1,stat2,...,statn
+
+        usage:
+        %%slim_stats_reps_rstack num_reps cell_script
         """
         script = cell
         n = int(reps)
@@ -111,4 +121,20 @@ class SlimMagic(Magics):
         dff = pd.concat(aList)
         return dff
         
-
+    @cell_magic
+    def slim_ts(self, name=None, cell=None):
+        """
+        slim_ts returns a tree sequence object resulting
+        from the SLiM simulation.
+        Contents of the cell specify the complete SLiM
+        simulation.
+        
+        usage:
+        %%slim_ts
+        """
+        script = cell
+        logfile = "tmp.log"
+        os.system("echo '" + script + "' | slim > " + logfile)
+        ts = tskit.load("tmp.trees")
+        # TODO: delete tmp.log and tmp.trees
+        return ts
