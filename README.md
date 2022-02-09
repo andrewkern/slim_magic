@@ -35,7 +35,7 @@ that will take a minute. now install the
 $ python setup.py install
 ```
 ## usage
-Currently there are three separate magic functions implemented, please
+Currently there are four separate magic functions implemented, please
 see `example_magic.ipynb` for a jupyter notebook example.
 you can fire that up at the command line with
 
@@ -43,6 +43,6 @@ you can fire that up at the command line with
 $ jupyter notebook
 ```
 
-The three functions are `%%slim_stats`, `%%slim_stats_reps_cstack`, and
-`%%slim_stats_reps_rstack`
+The four functions are `%%slim_stats`, `%%slim_stats_reps_cstack`, 
+`%%slim_stats_reps_rstack`, and `%%slim_ts`
 
