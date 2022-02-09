@@ -10,9 +10,31 @@ intuition for what a simulation
 might produce, without
 using the excellent SLiM GUI. 
 
+## installation
+To install `slim_magic` take the following steps, starting with
+cloning this repo
+
+```
+$ git clone git@github.com:andrewkern/slim_magic.git
+$ cd slim_magic
+```
+(optional) create a new conda environment or similar
+```
+$ conda create -n slim_magic python=3.8 --yes
+```
+that will take a minute. then activate that env and install
+```
+$ conda activate slim_magic
+$ python setup.py install
+```
 ## usage
 Currently there are three separate magic functions implemented, please
 see `example_magic.ipynb` for a jupyter notebook example.
+you can fire that up at the command line with
+
+```
+$ jupyter notebook
+```
 
 The three functions are `%%slim_stats`, `%%slim_stats_reps_cstack`, and
 `%%slim_stats_reps_rstack`
