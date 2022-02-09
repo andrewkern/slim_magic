@@ -10,7 +10,7 @@ intuition for what a simulation
 might produce, without
 using the excellent SLiM GUI. 
 
-## installation
+## Installation
 To install `slim_magic` take the following steps, starting with
 cloning this repo
 
@@ -21,10 +21,11 @@ $ cd slim_magic
 (optional) create a new conda environment or similar
 ```
 $ conda create -n slim_magic python=3.8 --yes
-```
-that will take a minute. then activate that env and install
-```
 $ conda activate slim_magic
+```
+that will take a minute. now install the
+`slim_magic` ipython extension
+```
 $ python setup.py install
 ```
 ## usage
