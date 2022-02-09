@@ -1,14 +1,48 @@
 from IPython.core.magic import (Magics, magics_class, line_magic, cell_magic)
+from IPython.core import magic_arguments
+from IPython.utils.process import arg_split
 from io import StringIO
 import os
+import sys
 import subprocess
 import pandas as pd
 import tskit
 
+def slim_magic_args(f):
+    """single decorator for adding script args"""
+    args = [
+        magic_arguments.argument(
+            '--out', type=str,
+            help="""The variable in which to store output from the script.            
+            """
+        ),
+    ]
+    for arg in args:
+        f = arg(f)
+    return f
 
+def slim_magic_args_reps(f):
+    """single decorator for adding script args"""
+    args = [
+        magic_arguments.argument(
+            'num_reps', type=int,
+            help="""The number of replicate simulations to run.            
+            """
+        ),
+        magic_arguments.argument(
+            '--out', type=str,
+            help="""The variable in which to store output from the script.            
+            """
+        ),
+    ]
+    for arg in args:
+        f = arg(f)
+    return f
 @magics_class
 class SlimMagic(Magics):
-
+    
+    @magic_arguments.magic_arguments()
+    @slim_magic_args
     @cell_magic
     def slim_stats(self, name=None, cell=None):
         """
@@ -26,6 +60,8 @@ class SlimMagic(Magics):
         usage:
         %%slim_stats 
         """
+        argv = arg_split(line, posix=not sys.platform.startswith("win"))
+        args, cmd = self.slim_stats.parser.parse_known_args(argv)
         script = cell
         logfile = "tmp.log"
         os.system("echo '" + script + "' | slim > " + logfile)
@@ -40,10 +76,16 @@ class SlimMagic(Magics):
                     count += 1
         df = pd.read_csv(logfile, skiprows=count)
         df = df.set_index('generation')
-        return df
+        if args.out:
+            self.shell.user_ns[args.out] = df
+            return
+        else:
+            return df
 
+    @magic_arguments.magic_arguments()
+    @slim_magic_args_reps
     @cell_magic
-    def slim_stats_reps_cstack(self, num_reps, cell):
+    def slim_stats_reps_cstack(self, line, cell):
         """
         slim_stats_reps_cstack returns a pandas df in which
         num_reps number of replicate SLiM simulations have been
@@ -56,11 +98,11 @@ class SlimMagic(Magics):
         
         generation,stat1_rep1,stat2_rep1,...,statn_rep1,...,stat1_repn,...
        
-        usage:
-        %%slim_stats_reps_cstack num_reps cell
         """
+        argv = arg_split(line, posix=not sys.platform.startswith("win"))
+        args, cmd = self.slim_stats_reps_cstack.parser.parse_known_args(argv)
         script = cell
-        n = int(num_reps)
+        n = int(args.num_reps)
         aList = []
         for i in range(n):
             logfile = "tmp.log"
@@ -81,10 +123,16 @@ class SlimMagic(Magics):
         # below concat means that all columns will
         # have same names among reps
         dff = pd.concat(aList, axis=1, join="inner")
-        return dff
-        
+        if args.out:
+            self.shell.user_ns[args.out] = dff
+            return
+        else:
+            return dff
+    
+    @magic_arguments.magic_arguments()
+    @slim_magic_args_reps
     @cell_magic
-    def slim_stats_reps_rstack(self, num_reps, cell):
+    def slim_stats_reps_rstack(self, line, cell):
         """
         slim_stats_reps_rstack returns a pandas df in which
         num_reps number of replicate slim simulations have been
@@ -97,11 +145,11 @@ class SlimMagic(Magics):
         
         generation,stat1,stat2,...,statn
 
-        usage:
-        %%slim_stats_reps_rstack num_reps cell_script
         """
+        argv = arg_split(line, posix=not sys.platform.startswith("win"))
+        args, cmd = self.slim_stats_reps_rstack.parser.parse_known_args(argv)
         script = cell
-        n = int(num_reps)
+        n = int(args.num_reps)
         aList = []
         for i in range(n):
             logfile = "tmp.log"
@@ -119,10 +167,16 @@ class SlimMagic(Magics):
             df = df.set_index('generation')
             aList.append(df)
         dff = pd.concat(aList)
-        return dff
+        if args.out:
+            self.shell.user_ns[args.out] = dff
+            return
+        else:
+            return dff
         
+    @magic_arguments.magic_arguments()
+    @slim_magic_args
     @cell_magic
-    def slim_ts(self, name=None, cell=None):
+    def slim_ts(self, line=None, cell=None):
         """
         slim_ts returns a tree sequence object resulting
         from the SLiM simulation.
@@ -132,9 +186,15 @@ class SlimMagic(Magics):
         usage:
         %%slim_ts cell_script
         """
+        argv = arg_split(line, posix=not sys.platform.startswith("win"))
+        args, cmd = self.slim_ts.parser.parse_known_args(argv)
         script = cell
         logfile = "tmp.log"
         os.system("echo '" + script + "' | slim > " + logfile)
         ts = tskit.load("tmp.trees")
         # TODO: delete tmp.trees and tmp.log
-        return ts
+        if args.out:
+            self.shell.user_ns[args.out] = ts
+            return
+        else:
+            return ts
