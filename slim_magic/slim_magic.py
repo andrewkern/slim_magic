@@ -40,6 +40,28 @@ def slim_magic_args_reps(f):
     return f
 @magics_class
 class SlimMagic(Magics):
+
+    @magic_arguments.magic_arguments()
+    @slim_magic_args
+    @cell_magic
+    def slim(self, line=None, cell=None):
+        """
+        slim runs a SLiM simulation and prints the resulting stdout.
+        %%slim
+        """
+        argv = arg_split(line, posix=not sys.platform.startswith("win"))
+        args, cmd = self.slim_stats.parser.parse_known_args(argv)
+        script = cell
+        logfile = "tmp.log"
+        os.system("echo '" + script + "' | slim > " + logfile)
+        with open(logfile, "r") as f:
+            log = f.read()
+        if args.out:
+            self.shell.user_ns[args.out] = log
+        else:
+            print(log)
+        return
+
     
     @magic_arguments.magic_arguments()
     @slim_magic_args
