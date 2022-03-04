@@ -4,6 +4,7 @@ from IPython.utils.process import arg_split
 from io import StringIO
 import os
 import sys
+import re
 import subprocess
 import pandas as pd
 import tskit
@@ -27,6 +28,16 @@ def slim_magic_args_reps(f):
         magic_arguments.argument(
             'num_reps', type=int,
             help="""The number of replicate simulations to run.            
+            """
+        ),
+        magic_arguments.argument(
+            '--param_vec', 
+            nargs='+',
+            action='append',
+            help=
+            """
+            values of parameter to hand to each rep.            
+            note len(vector) must be num_reps
             """
         ),
         magic_arguments.argument(
@@ -119,16 +130,34 @@ class SlimMagic(Magics):
         the header row begins with 'generation' e.g.,
         
         generation,stat1_rep1,stat2_rep1,...,statn_rep1,...,stat1_repn,...
+
+        usage:
+        %%slim_stats_reps_cstack num_reps
+        optional args:
+        --param_vec values of parameter to hand to each rep.    
+            first value is parameter name, then value for first rep, second for second, etc.
+            multiple --param_vec args can be specified to add multiple parameters.
+        
+        --out variable in which to store output from the script.
        
         """
         argv = arg_split(line, posix=not sys.platform.startswith("win"))
         args, cmd = self.slim_stats_reps_cstack.parser.parse_known_args(argv)
         script = cell
         n = int(args.num_reps)
+        if args.param_vec:
+            assert any([len(x) == n + 1 for x in args.param_vec]), "len of each param_vec must be num_reps"
+            param_vec = args.param_vec
+        
         aList = []
         for i in range(n):
             logfile = "tmp.log"
-            os.system("echo '" + script + "' | slim > " + logfile)
+
+            cmd_str = "echo '" + script + "' | slim "
+            if args.param_vec:
+                for pi in param_vec:
+                    cmd_str += "-d " + pi[0] + "=" + pi[i+1] + " "
+            os.system(cmd_str + " > " + logfile)
             # deal with slim output header lines
             pattern = "generation,"
             count = 0
