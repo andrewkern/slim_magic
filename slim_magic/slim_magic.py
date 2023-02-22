@@ -86,9 +86,9 @@ class SlimMagic(Magics):
         
         Output from simulation is expected to be a comma-delimited
         list of summaries printed from slim to stdout. by convention
-        the header row begins with 'generation' e.g.,
+        the header row begins with 'cycle' e.g.,
         
-        generation, stat1, stat2, ... , statn
+        cycle, stat1, stat2, ... , statn
 
         usage:
         %%slim_stats 
@@ -99,7 +99,7 @@ class SlimMagic(Magics):
         logfile = "tmp.log"
         os.system("echo '" + script + "' | slim > " + logfile)
         # deal with slim output header lines
-        pattern = "generation,"
+        pattern = "cycle,"
         count = 0
         with open(logfile, "r") as f:
             for line in f:
@@ -108,7 +108,7 @@ class SlimMagic(Magics):
                 else:
                     count += 1
         df = pd.read_csv(logfile, skiprows=count)
-        df = df.set_index('generation')
+        df = df.set_index('cycle')
         if args.out:
             self.shell.user_ns[args.out] = df
             return
@@ -127,9 +127,9 @@ class SlimMagic(Magics):
         
         output from simulation is expected to be a comma-delimited
         list of summaries printed from SLiM to stdout. by convention
-        the header row begins with 'generation' e.g.,
+        the header row begins with 'cycle' e.g.,
         
-        generation,stat1_rep1,stat2_rep1,...,statn_rep1,...,stat1_repn,...
+        cycle,stat1_rep1,stat2_rep1,...,statn_rep1,...,stat1_repn,...
 
         usage:
         %%slim_stats_reps_cstack num_reps
@@ -159,7 +159,7 @@ class SlimMagic(Magics):
                     cmd_str += "-d " + pi[0] + "=" + pi[i+1] + " "
             os.system(cmd_str + " > " + logfile)
             # deal with slim output header lines
-            pattern = "generation,"
+            pattern = "cycle,"
             count = 0
             with open(logfile, "r") as f:
                 for line in f:
@@ -168,7 +168,7 @@ class SlimMagic(Magics):
                     else:
                         count += 1
             df = pd.read_csv(logfile, skiprows=count)
-            df = df.set_index('generation')
+            df = df.set_index('cycle')
             # sucking everything up from log file
             aList.append(df)
         # below concat means that all columns will
@@ -192,9 +192,9 @@ class SlimMagic(Magics):
         
         output from simulation is expected to be a comma-delimited
         list of summaries printed from slim to stdout. by convention
-        the header row begins with 'generation' e.g.,
+        the header row begins with 'cycle' e.g.,
         
-        generation,stat1,stat2,...,statn
+        cycle,stat1,stat2,...,statn
 
         """
         argv = arg_split(line, posix=not sys.platform.startswith("win"))
@@ -206,7 +206,7 @@ class SlimMagic(Magics):
             logfile = "tmp.log"
             os.system("echo '" + script + "' | slim > " + logfile)
             # deal with slim output header lines
-            pattern = "generation,"
+            pattern = "cycle,"
             count = 0
             with open(logfile, "r") as f:
                 for line in f:
@@ -215,7 +215,7 @@ class SlimMagic(Magics):
                     else:
                         count += 1
             df = pd.read_csv(logfile, skiprows=count)
-            df = df.set_index('generation')
+            df = df.set_index('cycle')
             aList.append(df)
         dff = pd.concat(aList)
         if args.out:
